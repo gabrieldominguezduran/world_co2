@@ -6,6 +6,7 @@
   export let contextName = "canvas";
 
   const drawFunctions = [];
+  let mouseMoveFunctions = [];
 
   let canvas;
   let ctx;
@@ -37,14 +38,24 @@
     pendingInvalidation = false;
   }
 
+  function handleMouseMove(event) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    mouseMoveFunctions.forEach((fn) => fn(mouseX, mouseY));
+  }
+
   onMount(() => {
     ctx = canvas.getContext("2d");
+    canvas.addEventListener("mousemove", handleMouseMove);
   });
 
   onDestroy(() => {
     if (frameId) {
       cancelAnimationFrame(frameId);
     }
+    canvas.removeEventListener("mousemove", handleMouseMove);
   });
 
   $: setContext(contextName, {
@@ -53,6 +64,12 @@
     },
     deregister(fn) {
       drawFunctions.splice(drawFunctions.indexOf(fn), 1);
+    },
+    registerMouseMove(fn) {
+      mouseMoveFunctions.push(fn);
+    },
+    deregisterMouseMove(fn) {
+      mouseMoveFunctions.splice(mouseMoveFunctions.indexOf(fn), 1);
     },
     invalidate() {
       if (pendingInvalidation) return;
@@ -71,5 +88,6 @@
 <style>
   canvas {
     display: block;
+    transition: transform 0.9s ease;
   }
 </style>

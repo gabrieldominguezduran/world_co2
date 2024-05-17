@@ -1,0 +1,81 @@
+[
+  {
+    "Country_Name": "World",
+    "Continent": null,
+    "CO2kt": 35848592.0,
+    "GDP": 76924649544655.59375,
+    "population": 7182860115.0
+  },
+  {
+    "Country_Name": "China",
+    "Continent": "Asia",
+    "CO2kt": 10249463.0199999996,
+    "GDP": 9607224248684.599609375,
+    "population": 1357380000.0,
+    "coordinates": [104.1954, 35.8617]
+  },
+  {
+    "Country_Name": "United States",
+    "Continent": "North America",
+    "CO2kt": 5186168.4299999997,
+    "GDP": 16691517000000.0,
+    "population": 316204908.0,
+    "coordinates": [-95.7129, 37.0902]
+  },
+  {
+    "Country_Name": "India",
+    "Continent": "Asia",
+    "CO2kt": 2034752.29,
+    "GDP": 1856722121394.3999023438,
+    "population": 1278562207.0,
+    "coordinates": [78.9629, 20.5937]
+  },
+  {
+    "Country_Name": "Russia",
+    "Continent": "Europe",
+    "CO2kt": 1789074.3,
+    "GDP": 2230625004653.6000976562,
+    "population": 143506911.0,
+    "coordinates": [105.3188, 61.524]
+  },
+  {
+    "Country_Name": "Japan",
+    "Continent": "Asia",
+    "CO2kt": 1243384.3600000001,
+    "GDP": 5155717056270.7998046875,
+    "population": 127445000.0,
+    "coordinates": [138.2529, 36.2048]
+  },
+  {
+    "Country_Name": "Germany",
+    "Continent": "Europe",
+    "CO2kt": 757312.51,
+    "GDP": 3752513503278.3999023438,
+    "population": 80645605.0,
+    "coordinates": [10.4515, 51.1657]
+  },
+  {
+    "Country_Name": "Iran",
+    "Continent": "Asia",
+    "CO2kt": 616976.42,
+    "GDP": 511620875086.799987793,
+    "population": 77435384.0,
+    "coordinates": [53.688, 32.4279]
+  },
+  {
+    "Country_Name": "Korea Rep.",
+    "Continent": "Asia",
+    "CO2kt": 592499.1899999999,
+    "GDP": 1305604981271.8999023438,
+    "population": 50428893.0,
+    "coordinates": [127.7669, 35.9078]
+  },
+  {
+    "Country_Name": "Saudi Arabia",
+    "Continent": "Asia",
+    "CO2kt": 541428.88,
+    "GDP": 746647127407.5999755859,
+    "population": 29944476.0,
+    "coordinates": [45.0792, 23.8859]
+  }
+]

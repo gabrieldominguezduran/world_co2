@@ -4,34 +4,60 @@
   export let countryData;
   export let projection;
   export let contextName = "canvas";
+  export let selectedMetric;
+  export let maxValues;
+  export let color;
 
   let cx, cy;
-  const { register, deregister, invalidate } = getContext(contextName);
+  let hovered = false;
+  const {
+    register,
+    deregister,
+    invalidate,
+    registerMouseMove,
+    deregisterMouseMove,
+  } = getContext(contextName);
 
   function draw(ctx) {
     if (cx !== undefined && cy !== undefined) {
-      const radius = Math.sqrt(countryData.emissions) / 1400; // Aumentar el tamaño de las burbujas
+      let metricValue, maxValue;
+      switch (selectedMetric) {
+        case "gdp":
+          metricValue = countryData.gdp;
+          maxValue = maxValues.gdp;
+          break;
+        case "population":
+          metricValue = countryData.population;
+          maxValue = maxValues.population;
+          break;
+        case "emissions":
+        default:
+          metricValue = countryData.emissions;
+          maxValue = maxValues.emissions;
+          break;
+      }
 
-      // Dibuja el círculo
+      const baseRadius = Math.sqrt(metricValue / maxValue) * 100;
+      const radius = hovered ? baseRadius + (60 - baseRadius) : baseRadius; // Larger growth for smaller bubbles
+
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-      ctx.fillStyle = "rgba(128, 0, 128, 0.8)"; // Color púrpura
+      ctx.fillStyle = color;
       ctx.fill();
       ctx.strokeStyle = "#fff";
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      // Dibuja el texto
       ctx.fillStyle = "#fff";
-      ctx.font = `bold ${radius / 3.5}px Arial`; // Ajustar el tamaño de la fuente
+      ctx.font = `bold ${radius / 3.5}px Arial`;
       ctx.textAlign = "center";
-      ctx.textBaseline = "middle"; // Centrar verticalmente el texto
+      ctx.textBaseline = "middle";
 
-      // Texto múltiple
       const lines = [
         `${countryData.rank}`,
         countryData.country,
-        abbreviateNumber(countryData.emissions) + " CO2",
+        abbreviateNumber(metricValue) +
+          (selectedMetric === "emissions" ? " CO2" : ""),
       ];
 
       lines.forEach((line, index) => {
@@ -56,13 +82,33 @@
     }
   }
 
+  function handleMouseMove(mouseX, mouseY) {
+    const baseRadius =
+      Math.sqrt(countryData[selectedMetric] / maxValues[selectedMetric]) * 50;
+    const distance = Math.sqrt((mouseX - cx) ** 2 + (mouseY - cy) ** 2);
+
+    if (distance <= baseRadius) {
+      if (!hovered) {
+        hovered = true;
+        invalidate(); // Redraw the bubble
+      }
+    } else {
+      if (hovered) {
+        hovered = false;
+        invalidate(); // Redraw the bubble
+      }
+    }
+  }
+
   onMount(() => {
     register(draw);
+    registerMouseMove(handleMouseMove);
     invalidate();
   });
 
   onDestroy(() => {
     deregister(draw);
+    deregisterMouseMove(handleMouseMove);
   });
 
   afterUpdate(invalidate);
@@ -75,6 +121,6 @@
       suffixNum++;
       shortValue /= 1000;
     }
-    return shortValue.toFixed(1) + suffixes[suffixNum];
+    return shortValue.toFixed(2) + suffixes[suffixNum];
   }
 </script>
