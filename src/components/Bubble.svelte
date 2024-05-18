@@ -7,6 +7,7 @@
   export let selectedMetric;
   export let maxValues;
   export let color;
+  export let abbreviateNumber;
 
   let cx, cy;
   let hovered = false;
@@ -57,7 +58,7 @@
         `${countryData.rank}`,
         countryData.country,
         abbreviateNumber(metricValue) +
-          (selectedMetric === "emissions" ? " CO2" : ""),
+          (selectedMetric === "emissions" ? " CO₂" : ""),
       ];
 
       lines.forEach((line, index) => {
@@ -90,11 +91,13 @@
     if (distance <= baseRadius) {
       if (!hovered) {
         hovered = true;
+        document.body.classList.add("pointer-cursor");
         invalidate(); // Redraw the bubble
       }
     } else {
       if (hovered) {
         hovered = false;
+        document.body.classList.remove("pointer-cursor");
         invalidate(); // Redraw the bubble
       }
     }
@@ -112,15 +115,4 @@
   });
 
   afterUpdate(invalidate);
-
-  function abbreviateNumber(value) {
-    const suffixes = ["", "K", "M", "B", "T"];
-    let suffixNum = 0;
-    let shortValue = value;
-    while (shortValue >= 1000 && suffixNum < suffixes.length - 1) {
-      suffixNum++;
-      shortValue /= 1000;
-    }
-    return shortValue.toFixed(2) + suffixes[suffixNum];
-  }
 </script>

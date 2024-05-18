@@ -88,6 +88,5 @@
 <style>
   canvas {
     display: block;
-    transition: transform 0.9s ease;
   }
 </style>

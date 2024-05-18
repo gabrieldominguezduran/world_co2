@@ -77,5 +77,13 @@
     "GDP": 746647127407.5999755859,
     "population": 29944476.0,
     "coordinates": [45.0792, 23.8859]
+  },
+  {
+    "Country_Name": "Brazil",
+    "Continent": "Central and South America",
+    "CO2kt": 503677.12,
+    "GDP": 2472806919901.700195,
+    "population": 202408632.0,
+    "coordinates": [-51.9253, -14.235]
   }
 ]

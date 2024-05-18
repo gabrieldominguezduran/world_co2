@@ -48,12 +48,21 @@
     .filter((d) => d.coordinates || d.country === "World");
 
   let worldData = data.find((d) => d.country === "World");
+  let top10Data = data.filter((d) => d.country !== "World").slice(0, 10); // Exclude "World" and take the top 10
+  let top10Total = top10Data.reduce(
+    (acc, curr) => acc + curr[selectedMetric],
+    0
+  );
+  let restOfWorld = Math.max(0, worldData[selectedMetric] - top10Total);
 
   function updateDataForSelectedMetric() {
     data.sort((a, b) => b[selectedMetric] - a[selectedMetric]);
     data.forEach((d, index) => {
-      d.rank = index + 1;
+      d.rank = index;
     });
+    top10Data = data.filter((d) => d.country !== "World").slice(0, 10); // Exclude "World" and take the top 10
+    top10Total = top10Data.reduce((acc, curr) => acc + curr[selectedMetric], 0);
+    restOfWorld = Math.max(0, worldData[selectedMetric] - top10Total); // Ensure restOfWorld is not negative
   }
 
   let projection, pathGenerator;
@@ -87,14 +96,30 @@
     return colors[metric];
   }
 
+  function abbreviateNumber(value) {
+    const suffixes = ["", "K", "M", "B", "T"];
+    let suffixNum = 0;
+    let shortValue = value;
+    while (shortValue >= 1000 && suffixNum < suffixes.length - 1) {
+      suffixNum++;
+      shortValue /= 1000;
+    }
+    return shortValue.toFixed(2) + suffixes[suffixNum];
+  }
+
   // Initialize the data with the default selected metric
   updateDataForSelectedMetric();
 </script>
 
 <div class="main" bind:clientWidth={width} bind:clientHeight={height}>
   <Canvas {width} {height}>
+    <div class="title">
+      <h1>Countries with the highest CO₂ emissions in 2013</h1>
+    </div>
     <div class="world-data" style="color: {colors[selectedMetric]};">
-      World: {worldData[selectedMetric].toLocaleString()}
+      World: {abbreviateNumber(worldData[selectedMetric])}<br />
+      Top 10 total: {abbreviateNumber(top10Total)}<br />
+      Rest of the world: {abbreviateNumber(restOfWorld)}
     </div>
     {#each countries as { id, path }}
       <Country {path} fill="#FF5733" stroke="#fff" />
@@ -107,6 +132,7 @@
           {selectedMetric}
           {maxValues}
           color={colors[selectedMetric]}
+          {abbreviateNumber}
         />
       {/if}
     {/each}
@@ -114,7 +140,7 @@
   <div class="labels">
     <button
       on:click={() => setSelectedMetric("emissions")}
-      style="background-color: {getButtonColor('emissions')}">CO2</button
+      style="background-color: {getButtonColor('emissions')}">CO₂</button
     >
     <button
       on:click={() => setSelectedMetric("gdp")}
@@ -137,19 +163,28 @@
     position: relative;
   }
 
+  .title {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 90%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
   .world-data {
     position: absolute;
-    top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 3rem;
+    bottom: 1rem;
+    left: 1%;
+    font-size: 1.3rem;
     font-weight: bold;
   }
 
   .labels {
     position: absolute;
     bottom: 3rem;
-    right: 5rem;
+    right: 20%;
     display: flex;
     gap: 10px;
     flex-direction: row;
@@ -165,5 +200,25 @@
 
   .labels button:hover {
     filter: brightness(85%);
+  }
+
+  @media (max-width: 1200px) {
+    .title {
+      font-size: 0.8rem;
+      left: 50%;
+    }
+
+    .world-data {
+      font-size: 1rem;
+    }
+
+    .labels {
+      bottom: 1rem;
+      right: 1rem;
+    }
+
+    .labels button {
+      padding: 0.5rem;
+    }
   }
 </style>
